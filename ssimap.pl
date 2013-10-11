@@ -17,7 +17,7 @@ my $socket = IO::Socket::SSL->new(
 my $client = Mail::IMAPClient->new(
    Socket   => $socket,
    User     => 'vikas.parashar@fosteringlinux.com',
-   Password => '0timflp0',
+   Password => 'redhat@123',
   )
   or die "new(): $@";
 
