@@ -4,6 +4,9 @@ use warnings;
 use Mail::IMAPClient;
 use IO::Socket::SSL;
 use Mail::IMAPClient::BodyStructure;
+use Email::Send;
+use Email::Send::Gmail;
+use Email::Simple::Creator;
 
 # Connect to the IMAP server via SSL
 my $socket = IO::Socket::SSL->new(
@@ -43,13 +46,49 @@ foreach(@msgs)
 print $_; print "\n";
 }
 
+$string1 = "";
+
 foreach  (@msgs) {
 	my $messageId = $client->get_header($_, "To") ;
-	print $messageId;
-	print "\n";
+	      if ( $messageId =~ m/\@infosys\.com/i ){
+				my $string = $client->body_string($_) or die "Could not body_string: $@\n";
+				$string1 = $string . "vikas is here \n" . $string1 ;
+		}
+print $string1;
 #      my $parts = map( "\n\t" . $_, $bso->parts );
 #      print "Msg $id (Content-type: ) contains these parts:$parts\n";
   }
 
 # Say bye
 $client->logout();
+
+
+my $email = Email::Simple->create(
+      header => [
+          From    => '<vikas.parashar@fosteringlinux.com>',
+          To      => 'reports@fosteringlinux.com',
+          Subject => 'IRCTC',
+	  'MIME-Version' => '1.0',
+      ],
+     # body => "$string1",
+      body => "test mail pls ignore it",
+  );
+
+my $sender = Email::Send->new(
+      {   mailer      => 'Gmail',
+          mailer_args => [
+              username => 'vikas.parashar@fosteringlinux.com',
+              password => 'redhat@123',
+          ]
+      }
+  );
+eval { $sender->send($email) };
+die "Error sending email: $@" if $@;
+
+
+
+
+
+
+
+
