@@ -41,37 +41,44 @@ foreach (@folders){
 	}
 }
 
-foreach(@msgs)
-{
-print $_; print "\n";
-}
 
 $string1 = "";
 
 foreach  (@msgs) {
 	my $messageId = $client->get_header($_, "To") ;
-	      if ( $messageId =~ m/\@infosys\.com/i ){
+		
+		@domain = split('@', $messageId);
+	#	$string1 = $string1 . $domain[1] . "\n";
+
+	      #if ( $messageId =~ m/\@infosys\.com/i ){
 				my $string = $client->body_string($_) or die "Could not body_string: $@\n";
-				$string1 = $string . "vikas is here \n" . $string1 ;
-		}
-print $string1;
+				$str1 = substr($string, 0, 100);
+				@string1 = $domain[1]."\n".$string1 . $str1 ."\n" ;
+		#}
+#print $string1;
 #      my $parts = map( "\n\t" . $_, $bso->parts );
 #      print "Msg $id (Content-type: ) contains these parts:$parts\n";
   }
 
+
+print @string1;
 # Say bye
 $client->logout();
 
 
+
+
+### for sending mail 
+
+sub vikas {
 my $email = Email::Simple->create(
       header => [
           From    => '<vikas.parashar@fosteringlinux.com>',
-          To      => 'reports@fosteringlinux.com',
+          To      => 'savikasparashar@gmail.com',
           Subject => 'IRCTC',
-	  'MIME-Version' => '1.0',
       ],
-     # body => "$string1",
-      body => "test mail pls ignore it",
+      body => "$string1",
+#      body => "test mail pls ignore it",
   );
 
 my $sender = Email::Send->new(
@@ -85,7 +92,7 @@ my $sender = Email::Send->new(
 eval { $sender->send($email) };
 die "Error sending email: $@" if $@;
 
-
+}
 
 
 
